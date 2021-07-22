@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\HomeController;
+use Illuminate\Support\Facades\DB;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,12 +16,21 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('frontend.index');
+    $sliders = DB::table('sliders')->latest()->get();
+    return view('frontend.index' , compact('sliders'));
 });
+//ADMIN ROUTER
 Route::get('/admin', function () {
+   
     return view('admin.dashboard');
 });
 
+Route::get('/slider/all', [HomeController::class, 'AllSlider'])->name('all.slider');
+Route::get('/slider/add', [HomeController::class, 'AddSlider'])->name('slider.add');
+Route::post('/slider/storage', [HomeController::class, 'StorageSlider'])->name('slider.storage');
+Route::get('/slider/edit/{id}', [HomeController::class, 'EditSlider']);
+Route::post('/slider/update/{id}', [HomeController::class, 'UpdateSlider']);
+Route::get('/slider/delete/{id}', [HomeController::class, 'DeleteSlider']);
 
 Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
     return view('dashboard');
